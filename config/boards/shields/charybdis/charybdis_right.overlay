@@ -1,4 +1,4 @@
-/* 형님의 황금 스펙을 준수하는 charybdis_right.overlay */
+/* 형님의 끈기가 만들어낸 최종본 charybdis_right.overlay */
 
 #include "charybdis.dtsi"
 #include <dt-bindings/zmk/matrix_transform.h>
@@ -20,7 +20,7 @@
         ;
 };
 
-/* 1. SPI 통신 핀 설정 (스펙: 8, 17번) */
+/* 1. SPI 통신 핀 설정 (8, 17번) */
 &pinctrl {
     spi0_default: spi0_default {
         group1 {
@@ -39,7 +39,7 @@
     };
 };
 
-/* 2. 트랙볼 센서 설정 (스펙: CS 20번, Motion 6번) */
+/* 2. 트랙볼 센서 설정 (CS 20번, Motion 6번) */
 &spi0 {
     status = "okay";
     compatible = "nordic,nrf-spim";
@@ -54,15 +54,19 @@
         reg = <0>;
         spi-max-frequency = <2000000>;
         
-        /* [중요] 스펙상 Motion 핀은 6번입니다. */
-        /* Badjeff 최신 드라이버는 'motion-gpios' 이름을 요구합니다. */
+        /* 핀 설정: Motion 6번 */
         motion-gpios = <&gpio0 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
 
-        /* 마우스 입력 정의 (Badjeff 필수 요구 사항) */
+        /* [핵심 수정] 드라이버가 딴소리 못하게 다 넣어버림 */
+        /* 구버전 호환용 */
         evt-type = <INPUT_EV_REL>;
         x-input-code = <INPUT_REL_X>;
         y-input-code = <INPUT_REL_Y>;
         
+        /* 신버전(Zephyr 표준) 요구사항 해결용 👇 */
+        zephyr,axis-x = <INPUT_REL_X>;
+        zephyr,axis-y = <INPUT_REL_Y>;
+
         scroll-layers = <5>;
         snipe-layers = <4>;
     };
